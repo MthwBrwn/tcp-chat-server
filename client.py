@@ -19,7 +19,8 @@ class Client:
 # need a way to change use nickname
     def change_nickname(self, new_nick):
         try:
-            self.nick = f'{ str(new_nick) }'
+            self.nick = new_nick
             return
         except:
+            print("something went wrong when changing the nickname!")
             pass
