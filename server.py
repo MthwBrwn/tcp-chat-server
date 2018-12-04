@@ -32,31 +32,40 @@ class ChatServer(threading.Thread):
         print(f'{nick}Connected rcvd for {addr[0]}{addr[1]}')
 
         while True:
-            data = conn.recv(4096)
-            import pdb; pdb.set_trace()
-            if len(self.client_pool):
-                for c in self.client_pool:
-                    if c.id not in self.message_history.keys():
-                        self.message_history[c.id] = []
+            try:
+                data = conn.recv(4096)
+                # import pdb; pdb.set_trace()
+                if len(self.client_pool):
+                    for c in self.client_pool:
+                        if c.id not in self.message_history.keys():
+                            self.message_history[c.id] = []
 
-                    # print("c = ",c , "...\n\n and type(c) = \n\n", type(c))
-                    # print("type of data = ", type(data), "\n\ndata content = ", str(data), "\n\n")
-                    # print("decoded data = ", data.decode(), "\n\n")
-                    # output = "for client " + str(c) + "we send data to all"
-                    # print(output)
-                    # c.conn.sendall(data)
+                        # print("c = ",c , "...\n\n and type(c) = \n\n", type(c))
+                        # print("type of data = ", type(data), "\n\ndata content = ", str(data), "\n\n")
+                        # print("decoded data = ", data.decode(), "\n\n")
+                        # output = "for client " + str(c) + "we send data to all"
+                        # print(output)
+                        # c.conn.sendall(data)
 
-                    self.message_history[c.id].append(data.decode())
-                    # import pdb; pdb.set_trace()
-                    if data == b'/quit\n':
-                        if c.id == id:
-                            c.conn.close()
-                    else:
-                        c.conn.sendall(data)
-            # [c.conn.sendall(data) for c in self.client_pool if len(self.client_pool)]
+                        self.message_history[c.id].append(data.decode())
+                        # import pdb; pdb.set_trace()
+                        if data == b'/quit\n':
+                            if c.id == id:
 
-            # ?rather than a list comprehension, call a parse() method that handles
-            # all of the message parsing and client communications
+                                c.conn.close()
+                                self.client_pool.remove(c)
+                                self.server.listen(10)
+                                print(f'{nick}Connected rcvd for {addr[0]}{addr[1]} closed.')
+                        else:
+                            c.conn.sendall(data)
+                    # [c.conn.sendall(data) for c in self.client_pool if len(self.client_pool)]
+
+                    # ?rather than a list comprehension, call a parse() method that handles
+                    # all of the message parsing and client communications
+            except OSError:
+                # [c.conn.close() for c in server.client_pool if len(server.client_pool)]
+                break
+                # pass
 
     def parse(in_info):
         """
