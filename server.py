@@ -28,7 +28,8 @@ class ChatServer(threading.Thread):
 
 
     def run_thread(self, id, nick, conn, addr):
-        """ """
+        """This method is run after run() establishes a connection
+        This  method gathers the connection data form the socket """
         print(f'{nick}Connected rcvd for {addr[0]}{addr[1]}')
 
         while True:
@@ -90,7 +91,8 @@ class ChatServer(threading.Thread):
 
 
     def run(self):
-        """ """
+        """this method handles the accepting of the connections establishing
+        the socket and the client address  """
         print(f'Server running on {self.host}{self.port}.')
 
         while True:

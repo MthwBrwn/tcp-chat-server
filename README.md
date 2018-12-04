@@ -1,13 +1,13 @@
 # tcp - chat-  server
 
-**Author**: Matthew Brown and Toby huang
+**Author**: Matthew Brown and Toby Huang
 **Version**: 1.0.0
 
 ## Overview
 This application sets up a TCP based chat room using python sockets.
 
 ## Getting Started
-To get started you will need to install pipenv, bring up an active environment with "pipenv shell" and then call this file
+To get started you will need to set up a server on the terminal using server.py.  Another terminal(s) can be used to connect using netcat and setting localhost to 9876
 
 ## Architecture
 This application is written in Python3.6
