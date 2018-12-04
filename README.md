@@ -17,3 +17,6 @@ This application is written in Python3.6
 ## Change Log
 
 15:30 - began work on app
+16:50 - worked out issue quit disconnect
+17:20  - reformatted nickname
+17:50   all features present
