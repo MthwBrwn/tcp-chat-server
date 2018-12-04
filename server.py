@@ -74,7 +74,7 @@ class ChatServer(threading.Thread):
                 elif in_info == b'/list\n':
                     if c.id == id:
                         for i in range(len(self.client_pool)):
-                            c.conn.sendall(f'{ i+1 }:    { self.client_pool[i] }\n'.encode())
+                            c.conn.sendall(f'{ i+1 }:   name = { self.client_pool[i].nick.decode() }; id = { self.client_pool[i].id }\n'.encode())
 
                 elif in_info[:9].lower() == b'/nickname':
                     if c.id == id:
