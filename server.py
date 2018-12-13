@@ -40,6 +40,8 @@ class ChatServer(threading.Thread):
                 # process user's input
                 self.parse(id, data)
 
+                # this line will keep prompt user
+                conn.sendall(b'>>>')
                 # [c.conn.sendall(data) for c in self.client_pool if len(self.client_pool)]
 
                 # ?rather than a list comprehension, call a parse() method that handles
@@ -75,15 +77,22 @@ class ChatServer(threading.Thread):
                 elif in_info == b'/list\n':
                     if c.id == id:
                         for i in range(len(self.client_pool)):
-                            c.conn.sendall(f'{ i+1 }:   name = { self.client_pool[i].nick.decode() }; id = { self.client_pool[i].id }\n'.encode())
+                            # hum...somehow self.client_pool[i].nick was understood as a string
+                            nickname = self.client_pool[i].nick
+                            if isinstance(nickname, bytes):
+                                nickname = nickname.decode()
+                            # import pdb; pdb.set_trace()
+                            c.conn.sendall(f'{ i+1 }:   name = { nickname }; id = { self.client_pool[i].id }\n'.encode())
 
                 elif in_info[:9].lower() == b'/nickname':
                     if c.id == id:
                         c.change_nickname(in_info[10:-1])
+
                 # /dm <to-username> <message>
                 elif in_info[:3].lower() == b'/dm':
                     tmp = in_info.decode().split(' ')
-                    to_username, to_message = tmp[1], tmp[2]
+                    to_username, to_message = tmp[1], tmp[2:]
+                    to_message = (" ".join(to_message))
                     if c.nick == to_username.encode():
                         c.conn.sendall(to_message.encode())
                 else:
@@ -99,6 +108,9 @@ class ChatServer(threading.Thread):
             conn, addr = self.server.accept()
             client = Client(conn=conn, addr=addr)
             self.client_pool.append(client)
+
+            # this >>> only show up once user connects to the server.
+            client.conn.sendall(b'>>>')
             threading.Thread(
                 target=self.run_thread,
                 args=(client.id, client.nick, client.conn, client.addr),
